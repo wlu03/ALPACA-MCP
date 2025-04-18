@@ -108,48 +108,7 @@ Now, you want to add the following to this json file for your MCP server.
 ```
 
 Save the file and restart Claude for Desktop. Once you launch you should see the hammer logo with your preloaded MCP toolkit/functions. Enjoy Trading!
-=======
-# alpaca-mcp
-[![smithery badge](https://smithery.ai/badge/@wlu03/alpaca-mcp)](https://smithery.ai/server/@wlu03/alpaca-mcp)
 
-## Description
-
-MCP server for Alpaca-LoRA.
-
-## Getting Started
-
-### Installing via Smithery
-
-To install alpaca-mcp for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@wlu03/alpaca-mcp):
-
-```bash
-npx -y @smithery/cli install @wlu03/alpaca-mcp --client claude
-```
-
-### Setting Up
-
-1. Clone this repository.
-
-   ```bash
-   git clone https://github.com/wlu03/alpaca-mcp.git
-   ```
-
-2. Install the dependencies.
-
-   ```bash
-   cd alpaca-mcp
-   pip install -r requirements.txt
-   ```
-
-3. Run the server.
-
-   ```bash
-   python server.py
-   ```
-
-## Usage
-
-Configure your MCP client to connect to the server on the specified port.
 
 ## Contributions
 
