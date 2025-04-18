@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Alpaca API MCP Server
 ------
 
@@ -163,4 +162,3 @@ This project is licensed under the MIT License.
 ## Contact
 
 For issues, questions, and suggestions, create an issue in the repository or contact the maintainers through GitHub.
->>>>>>> 7bc2ee3f7e74ba331c377030f36651b1a565f509
