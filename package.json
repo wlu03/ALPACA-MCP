@@ -4,9 +4,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev":   "node -r dotenv/config --loader ts-node/esm src/index.ts",
     "build": "tsc",
-    "start": "node build/index.js"
+    "start": "node -r dotenv/config build/index.js"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +15,7 @@
   "dependencies": {
     "@alpacahq/typescript-sdk": "^0.0.31-preview",
     "@modelcontextprotocol/sdk": "^1.10.0",
+    "dotenv": "^16.5.0",
     "zod": "^3.24.3"
   },
   "devDependencies": {

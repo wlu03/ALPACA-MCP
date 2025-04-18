@@ -1,11 +1,28 @@
+// src/index.ts
+import path from "path";
+import fs from "fs";
+import dotenv from "dotenv";
+
+// full absolute path to your .env
+const envPath = "/Users/wesleylu/Desktop/ALPACA-MCP/.env";
+
+// debug output so you can see where it’s looking
+console.error("Loading .env from:", envPath, "exists?", fs.existsSync(envPath));
+
+// now load it
+dotenv.config({ path: envPath });
+
+
+
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { symbol, z } from "zod";
 import { createClient } from "@alpacahq/typescript-sdk";
 
+import { existsSync, readFileSync } from "fs";
 
-import dotenv from 'dotenv';
-dotenv.config();
+
+
 
 const Env = z.object({
   ALPACA_PAPER_KEY: z.string().min(1),
@@ -34,7 +51,7 @@ const server = new McpServer({
 // Tool
 
 server.tool(
-  "getAlpacaAccount",              // name
+  "get-alpaca-account",              // name
   "Fetches your Alpaca account",   // description
   async (extra) => {
     const acct = await client.getAccount();
@@ -51,7 +68,7 @@ server.tool(
 
 type CreateOrderOpts = Parameters<typeof client.createOrder>[0];
 server.tool(
-  "alpaca.createOrder",
+  "alpaca-createOrder",
   {
     symbol:        z.string().describe("Ticker symbol, e.g. AAPL"),
     qty:           z.number().describe("Number of shares"),
@@ -90,7 +107,7 @@ server.tool(
 type GetOrderOpt  = Parameters<typeof client.getOrder>[0];
 // Get single order by ID
 server.tool(
-  "alpaca.getOrder",
+  "alpaca-getOrder",
   {
     order_id: z.string().describe("The unique ID of the Alpaca order"),
   },
@@ -134,7 +151,7 @@ const getOrdersSchema = z
   .describe("Retrieves a list of your Alpaca orders");
 type GetOrdersOpts = z.infer<typeof getOrdersSchema>;
 server.tool(
-  "alpaca.getOrders",
+  "alpaca-getOrders",
   {
     status: z
       .enum(["open", "closed", "all"])
@@ -172,7 +189,7 @@ server.tool(
 // Replace order
 type ReplaceOrderOpts = Parameters<typeof client.replaceOrder>[0];
 server.tool(
-  "alpaca.replaceOrder",
+  "alpaca-replaceOrder",
   {
     order_id:   z.string().describe("The unique ID of the Alpaca order to replace"),
     qty:        z.number().optional().describe("New quantity of shares"),
@@ -205,7 +222,7 @@ server.tool(
 
 type CancelOrderOpts = Parameters<typeof client.cancelOrder>[0];
 server.tool(
-  "alpaca.cancelOrder",
+  "alpaca-cancelOrder",
   {
     order_id: z.string().describe("The unique ID of the Alpaca order to cancel"),
   },
@@ -226,7 +243,7 @@ server.tool(
 
 // Cancel all orders
 server.tool(
-  "alpaca.cancelOrders",
+  "alpaca-cancelOrders",
   {},
   async () => {
     // Alpaca returns an array of orders that were canceled
@@ -247,7 +264,7 @@ server.tool(
 
 type GetPositionOpts = Parameters<typeof client.getPosition>[0];
 server.tool(
-  "alpaca.getPosition",
+  "alpaca-getPosition",
   {
     symbol_or_asset_id: z
       .string()
@@ -270,7 +287,7 @@ server.tool(
 );
 
 server.tool(
-  "alpaca.getPositions",
+  "alpaca-getPositions",
   {}, // no inputs
   async () => {
     const all = await client.getPositions();
@@ -292,7 +309,7 @@ server.tool(
 // Close a specific position by symbol or asset ID
 type ClosePositionOpts = Parameters<typeof client.closePosition>[0];
 server.tool(
-  "alpaca.closePosition",
+  "alpaca-closePosition",
   {
     symbol_or_asset_id: z
       .string()
@@ -318,7 +335,7 @@ server.tool(
 
 // Close all positions
 server.tool(
-  "alpaca.closePositions",
+  "alpaca-closePositions",
   {}, // no parameters
   async () => {
     const raw = await client.closePositions();
@@ -340,7 +357,7 @@ server.tool(
 // Exercise an options contract
 type ExerciseOptionOpts = Parameters<typeof client.exerciseOption>[0];
 server.tool(
-  "alpaca.exerciseOption",
+  "alpaca-exerciseOption",
   {
     symbol_or_contract_id: z
       .string()
@@ -365,7 +382,7 @@ server.tool(
 // Watchlists
 type GetWatchlistOpts = Parameters<typeof client.getWatchlist>[0];
 server.tool(
-  "alpaca.getWatchlist",
+  "alpaca-getWatchlist",
   {
     watchlist_id: z.string().describe("The unique ID of the watchlist to fetch"),
   },
@@ -379,7 +396,7 @@ server.tool(
 );
 
 server.tool(
-  "alpaca.getWatchlists",
+  "alpaca-getWatchlists",
   {}, // no inputs
   async () => {
     const raw = await client.getWatchlists();
@@ -399,7 +416,7 @@ server.tool(
 
 type CreateWatchlistOpts = Parameters<typeof client.createWatchlist>[0];
 server.tool(
-  "alpaca.createWatchlist",
+  "alpaca-createWatchlist",
   {
     name: z.string().describe("Name for the new watchlist"),
     symbols: z
@@ -428,7 +445,7 @@ type UpdateWatchlistOpts = Parameters<typeof client.updateWatchlist>[0];
 
 // 2) Change your tool to require both name and symbols
 server.tool(
-  "alpaca.updateWatchlist",
+  "alpaca-updateWatchlist",
   {
     watchlist_id: z
       .string()
@@ -462,7 +479,7 @@ server.tool(
 
 type DeleteWatchlistOpts = Parameters<typeof client.deleteWatchlist>[0];
 server.tool(
-  "alpaca.deleteWatchlist",
+  "alpaca-deleteWatchlist",
   {
     watchlist_id: z.string().describe("The ID of the watchlist to delete"),
   },
@@ -483,7 +500,7 @@ server.tool(
 // Portfolio history
 type GetPortfolioHistoryOpts = Parameters<typeof client.getPortfolioHistory>[0];
 server.tool(
-  "alpaca.getPortfolioHistory",
+  "alpaca-getPortfolioHistory",
   {
     period: z
       .string()
@@ -521,7 +538,7 @@ server.tool(
 // Activities
 type GetActivityOpts = Parameters<typeof client.getActivity>[0];
 server.tool(
-  "alpaca.getActivity",
+  "alpaca-getActivity",
   {
     activity_type: z
       .string()
@@ -537,7 +554,7 @@ server.tool(
 );
 
 server.tool(
-  "alpaca.getActivities",
+  "alpaca-getActivities",
   {}, // no inputs
   async () => {
     const raw = await client.getActivities();
@@ -558,7 +575,7 @@ server.tool(
 // Options contracts
 type GetOptionsContractOpts = Parameters<typeof client.getOptionsContract>[0];
 server.tool(
-  "alpaca.getOptionsContract",
+  "alpaca-getOptionsContract",
   {
     symbol_or_contract_id: z
       .string()
@@ -580,7 +597,7 @@ type GetOptionsContractsOpts = Parameters<
 >[0];
 
 server.tool(
-  "alpaca.getOptionsContracts",
+  "alpaca-getOptionsContracts",
   {
     symbol_or_contract_id: z
       .string()
@@ -628,7 +645,7 @@ server.tool(
 // Corporate actions
 type GetCorporateActionOpts = Parameters<typeof client.getCorporateAction>[0];
 server.tool(
-  "alpaca.getCorporateAction",
+  "alpaca-getCorporateAction",
   {
     id: z.string().describe("ID of the corporate action"),
   },
@@ -646,7 +663,7 @@ type GetCorporateActionsOpts = Parameters<
 >[0];
 
 server.tool(
-  "alpaca.getCorporateActions",
+  "alpaca-getCorporateActions",
   {
     ca_types: z
       .string()
@@ -683,7 +700,7 @@ server.tool(
 
 
 server.tool(
-  "alpaca.getStocksCorporateActions",
+  "alpaca-getStocksCorporateActions",
   {
     symbols: z
       .string()
@@ -714,7 +731,7 @@ server.tool(
 // 7) News & market movers
 type GetNewsOpts = Parameters<typeof client.getNews>[0];
 server.tool(
-  "alpaca.getNews",
+  "alpaca-getNews",
   {
     symbols: z
       .string()
@@ -746,7 +763,7 @@ server.tool(
 
 type GetStocksMostActivesOpts = Parameters<typeof client.getStocksMostActives>[0];
 server.tool(
-  "alpaca.getStocksMostActives",
+  "alpaca-getStocksMostActives",
   {
     by: z
       .enum(["volume", "change"])
@@ -777,7 +794,7 @@ server.tool(
 
 type GetStocksMarketMoversOpts = Parameters<typeof client.getStocksMarketMovers>[0];
 server.tool(
-  "alpaca.getStocksMarketMovers",
+  "alpaca-getStocksMarketMovers",
   {
     by: z
       .enum(["volume", "change"])
@@ -809,7 +826,7 @@ server.tool(
 // Quotes, snapshots, conditions, trades
 type GetStocksQuotesOpts = Parameters<typeof client.getStocksQuotes>[0];
 server.tool(
-  "alpaca.getStocksQuotes",
+  "alpaca-getStocksQuotes",
   {
     symbols: z.string().describe("Comma‑separated symbols"),
     limit: z
@@ -841,7 +858,7 @@ server.tool(
 );
 
 server.tool(
-  "alpaca.getStocksQuotesLatest",
+  "alpaca-getStocksQuotesLatest",
   {
     symbols: z
       .string()
@@ -869,7 +886,7 @@ server.tool(
 
 
 server.tool(
-  "alpaca.getStocksSnapshots",
+  "alpaca-getStocksSnapshots",
   {
     symbols: z.string().describe("Comma‑separated symbols"),
   },
@@ -890,7 +907,7 @@ server.tool(
 );
 
 server.tool(
-  "alpaca.getStocksConditions",
+  "alpaca-getStocksConditions",
   {
     tickType: z.string().describe("Type of tick (e.g. 'trades', 'quotes')"),
     tape: z.string().describe("Tape identifier (e.g. 'A', 'B', 'C')"),
@@ -915,7 +932,7 @@ server.tool(
 );
 
 server.tool(
-  "alpaca.getStocksExchangeCodes",
+  "alpaca-getStocksExchangeCodes",
   {}, // no inputs
   async () => {
     const raw = await client.getStocksExchangeCodes();
@@ -935,7 +952,7 @@ server.tool(
 
 type GetStocksTradesOpts = Parameters<typeof client.getStocksTrades>[0];
 server.tool(
-  "alpaca.getStocksTrades",
+  "alpaca-getStocksTrades",
   {
     symbols: z.string().describe("Comma‑separated symbols"),
     limit: z
@@ -967,7 +984,7 @@ server.tool(
 );
 
 server.tool(
-  "alpaca.getStocksTradesLatest",
+  "alpaca-getStocksTradesLatest",
   {
     symbols: z
       .string()
